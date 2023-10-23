@@ -27,7 +27,7 @@ def sql_upload(private,address,balance):
         )
         cursor = cnxn.cursor()
         values = "('{0}','{1}','{2}')".format(private, address, balance)
-        query = "BEGIN INSERT INTO Unverified (PRIVATE, ADDRESS, BALANCE) VALUES "+values+" END;"
+        query = f"BEGIN INSERT INTO Unverified (PRIVATE, ADDRESS, BALANCE) VALUES {values} END;"
         cursor.execute(query)
         cnxn.commit()
         cursor.close()
@@ -45,7 +45,7 @@ def ethhack():
         private = SigningKey.generate(curve=SECP256k1)
         public = private.get_verifying_key().to_string()
         keccak.update(public)
-        address = "0x{}".format(keccak.hexdigest()[24:])
+        address = f"0x{keccak.hexdigest()[24:]}"
         try:
             balance = web3.eth.getBalance(address)
         except:
@@ -66,6 +66,6 @@ if __name__ == "__main__":
         parent.nice(10)
         for child in parent.children():
             child.nice(19)
-    [pool.apply_async(ethhack) for i in range(cores)]
+    [pool.apply_async(ethhack) for _ in range(cores)]
     pool.close()
     pool.join()
